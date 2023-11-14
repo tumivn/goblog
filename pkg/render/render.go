@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
 var templateCache = make(map[string]*template.Template)
@@ -33,4 +34,23 @@ func RenderTemplate(w http.ResponseWriter, tName string) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func CreateTemplateCache() (map[string]*template.Template, error) {
+	pagesCache := map[string]*template.Template{}
+
+	pages, err := filepath.Glob("./templates/*.page.html")
+
+	if err != nil {
+		return pagesCache, err
+	}
+	for _, page := range pages {
+		tpml, err := template.ParseFiles("./templates/"+page, "./templates/base.layout.html")
+
+		if err != nil {
+			return pagesCache, err
+		}
+		pagesCache[page] = tpml
+	}
+	return pagesCache, nil
 }
