@@ -1,38 +1,34 @@
 package render
 
 import (
+	"github.com/tumivn/goblog/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-var templateCache = make(map[string]*template.Template)
+var app *config.AppConfig
 
-//// RenderTemplate renders a template
-//func RenderTemplate(w http.ResponseWriter, tmpl string) {
-//	parsedTemplate, _ := template.ParseFiles("./templates/"+tmpl, "./templates/base.layout.html")
-//	err := parsedTemplate.Execute(w, nil)
-//	if err != nil {
-//		fmt.Println("error parsing template:", err)
-//	}
-//}
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
 
 func RenderTemplate(w http.ResponseWriter, tName string) {
-	var tmpl *template.Template
-	tmpl, inMap := templateCache[tName]
-	log.Println(inMap)
-	if !inMap {
-		tmpl, _ = template.ParseFiles("./templates/"+tName, "./templates/base.layout.html")
-		templateCache[tName] = tmpl
+	var tc map[string]*template.Template
+	if app.UseCache {
+		tc = app.TemplateCache
 	} else {
-		log.Println("using cached template")
+		tc, _ = CreateTemplateCache()
 	}
-
-	err := tmpl.Execute(w, nil)
-
+	t, ok := tc[tName]
+	if !ok {
+		log.Fatal("cannot get template from template cache")
+	}
+	err := t.Execute(w, nil)
 	if err != nil {
-		log.Println(err)
+		log.Fatal("Unable to write the template to the browser", err)
 	}
 }
 
@@ -40,17 +36,19 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	pagesCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob("./templates/*.page.html")
-
 	if err != nil {
 		return pagesCache, err
 	}
+
 	for _, page := range pages {
-		tpml, err := template.ParseFiles("./templates/"+page, "./templates/base.layout.html")
+		tpml, err := template.ParseFiles(page, "./templates/base.layout.html")
+		name := filepath.Base(page)
 
 		if err != nil {
 			return pagesCache, err
 		}
-		pagesCache[page] = tpml
+
+		pagesCache[name] = tpml
 	}
 	return pagesCache, nil
 }
