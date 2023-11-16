@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/tumivn/goblog/pkg/config"
+	"github.com/tumivn/goblog/pkg/models"
 	"github.com/tumivn/goblog/pkg/render"
 	"net/http"
 )
@@ -28,10 +29,14 @@ func NewHandlers(r *Repository) {
 
 // Home is the handler for the home page
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.html")
+	render.RenderTemplate(w, "home.page.html", &models.TemplateData{})
 }
 
 // About is the handler for the about page
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about.page.html")
+	stringMap := make(map[string]string)
+	stringMap["message"] = "Hello, again."
+	render.RenderTemplate(w, "about.page.html", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
