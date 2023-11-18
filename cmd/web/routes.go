@@ -11,7 +11,8 @@ import (
 func routes(app *config.AppConfig) http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Recoverer) //Recover from panic without crashing the server
+	mux.Use(NoSurf)               //Adding CSRF protection to all requests
 
 	mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
 	mux.Get("/about", http.HandlerFunc(handlers.Repo.About))
