@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	_ "github.com/lib/pq"
-	"github.com/tumivn/goblog/cmd/config"
-	"github.com/tumivn/goblog/cmd/handlers"
-	"github.com/tumivn/goblog/cmd/storage"
+	"github.com/tumivn/goblog/internal/server/config"
+	"github.com/tumivn/goblog/internal/server/handlers"
+	"github.com/tumivn/goblog/internal/storage"
 )
 
 var app config.AppConfig

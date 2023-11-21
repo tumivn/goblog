@@ -3,7 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
-	"github.com/tumivn/goblog/cmd/config"
+	"github.com/tumivn/goblog/internal/server/config"
 )
 
 var db *sql.DB
