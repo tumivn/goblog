@@ -5,7 +5,7 @@ Learning Go by building a simple blog APIs with GoLang, Echo
 Execute this command in your terminal to run postgres on docker 
 
 ```bash
-docker run --rm --name postgres -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres 
+docker run --rm -p 8080:8080 --link postgres:postgres --name blog-api -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog tumivn/blog:api-v01 
 ```
 
 Create database and tables
@@ -27,5 +27,11 @@ CREATE TABLE users (
 
 # Build docker image
 ```bash
-docker build -t tumivn/goblog .
+docker build -t tumivn/blog:api-v01 .
 ``` 
+
+# Run docker container, linking with postgres container 
+
+```bash
+docker run --rm -p 8080:8080 --link postgres:postgres --name blog-api --env DB_HOST=postgres,DB_PORT=5432,DB_USER=postgres,DB_PASSWORD=docker,DB_NAME=goblog tumivn/blog:api-v01
+```

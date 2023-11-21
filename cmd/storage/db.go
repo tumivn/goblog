@@ -3,28 +3,16 @@ package storage
 import (
 	"database/sql"
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
-	"os"
+	"github.com/tumivn/goblog/cmd/config"
 )
 
 var db *sql.DB
 
-func InitDB() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file" + err.Error())
-	}
-
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPass := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-
+func InitDB(app *config.AppConfig) {
+	var err error
 	db, err = sql.Open("postgres",
 		fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-			dbHost, dbUser, dbPass, dbName, dbPort))
+			app.DbHost, app.DbUser, app.DbPassword, app.DbName, app.DbPort))
 
 	if err != nil {
 		panic(err.Error())
