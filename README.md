@@ -25,13 +25,20 @@ CREATE TABLE users (
 );
 ```
 
+# Build the cms app 
+
+```bash
+go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl github.com/legangs/cms/cmd/cms
+```
+
+
 # Build docker image
 ```bash
-docker build -t tumivn/blog:api-v01 .
+docker build -t legangs/legangs:cms-v01 .
 ``` 
 
 # Run docker container, linking with postgres container 
 
 ```bash
-docker run --rm -p 8080:8080 --link postgres:postgres --name blog-api --env DB_HOST=postgres,DB_PORT=5432,DB_USER=postgres,DB_PASSWORD=docker,DB_NAME=goblog tumivn/blog:api-v01
+docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-cms -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog legangs/legangs:cms-v01
 ```

@@ -1,4 +1,4 @@
-module github.com/tumivn/goblog
+module github.com/legangs/cms
 
 go 1.21.3
 
