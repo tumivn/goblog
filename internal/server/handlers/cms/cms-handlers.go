@@ -2,21 +2,36 @@ package cms
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/domain/cms/models"
-	"github.com/legangs/cms/internal/domain/cms/repositories"
+	"github.com/legangs/cms/internal/domain/cms/dtos"
+	"github.com/legangs/cms/internal/domain/cms/services"
+	"github.com/legangs/cms/internal/server"
 	"net/http"
-	"time"
 )
 
-func CreateUser(c echo.Context) error {
-	user := models.User{}
-	c.Bind(&user)
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
+type UserHandler struct {
+	server *server.Server
+}
 
-	newUser, err := repositories.CreateUser(user)
+func NewUserHandler(s *server.Server) *UserHandler {
+	return &UserHandler{
+		server: s,
+	}
+}
+
+func (h *UserHandler) CreateUser(c echo.Context) error {
+	u := dtos.CreateUserRequest{}
+	c.Bind(&u)
+
+	err := u.Validate()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	newUser, err := services.CreatUser(u)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+
 	return c.JSON(http.StatusCreated, newUser)
 }

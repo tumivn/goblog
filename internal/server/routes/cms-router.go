@@ -1,0 +1,12 @@
+package routes
+
+import (
+	"github.com/legangs/cms/internal/server"
+	"github.com/legangs/cms/internal/server/handlers/cms"
+)
+
+func ConfigureCmsRoutes(s *server.Server) {
+	userHandler := cms.NewUserHandler(s)
+
+	s.Echo.POST("api/cms/users", userHandler.CreateUser)
+}

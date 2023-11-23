@@ -12,6 +12,7 @@ type AppConfig struct {
 	DbPassword string
 	DbPort     string
 	DbName     string
+	Port       string
 }
 
 func LoadConfig(app *AppConfig) {
@@ -25,4 +26,5 @@ func LoadConfig(app *AppConfig) {
 	app.DbUser = os.Getenv("DB_USER")
 	app.DbPassword = os.Getenv("DB_PASSWORD")
 	app.DbName = os.Getenv("DB_NAME")
+	app.Port = os.Getenv("PORT")
 }
