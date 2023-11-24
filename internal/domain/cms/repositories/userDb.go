@@ -14,3 +14,25 @@ func CreateUser(user models.User) (models.User, error) {
 	}
 	return user, nil
 }
+
+func GetUserByUsername(username string) (models.User, error) {
+	db := storage.GetDB()
+	sqlStatement := `SELECT * FROM users WHERE username=$1`
+	var user models.User
+	err := db.QueryRow(sqlStatement, username).Scan(&user.ID, &user.Username, &user.Email, &user.Firstname, &user.Lastname, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func GetUserByEmail(email string) (models.User, error) {
+	db := storage.GetDB()
+	sqlStatement := `SELECT * FROM users WHERE email=$1`
+	var user models.User
+	err := db.QueryRow(sqlStatement, email).Scan(&user.ID, &user.Username, &user.Email, &user.Firstname, &user.Lastname, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}

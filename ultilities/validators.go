@@ -1,6 +1,7 @@
-package validation
+package ultilities
 
 import (
+	"errors"
 	"unicode"
 )
 
@@ -12,7 +13,8 @@ import (
 // sym: at least one special character.
 // tot: at least eight characters long.
 // No empty string or whitespace.
-func ValidatePassword(pass string) bool {
+func ValidatePassword(value interface{}) error {
+	pass := value.(string)
 	var (
 		upp, low, num, sym bool
 		tot                uint8
@@ -33,13 +35,13 @@ func ValidatePassword(pass string) bool {
 			sym = true
 			tot++
 		default:
-			return false
+			return errors.New("password must contain at least one upper case letter, one lower case letter, one digit, one special character and at least eight characters long")
 		}
 	}
 
 	if !upp || !low || !num || !sym || tot < 8 {
-		return false
+		return errors.New("password must contain at least one upper case letter, one lower case letter, one digit, one special character and at least eight characters long")
 	}
 
-	return true
+	return nil
 }

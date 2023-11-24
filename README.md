@@ -25,6 +25,12 @@ CREATE TABLE users (
 );
 ```
 
+# Run the cms app 
+
+```bash
+go run github.com/legangs/cms/cmd/cms
+```
+
 # Build the cms app 
 
 ```bash

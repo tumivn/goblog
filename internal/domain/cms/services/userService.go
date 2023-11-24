@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"github.com/legangs/cms/internal/domain/cms/dtos"
 	"github.com/legangs/cms/internal/domain/cms/models"
 	"github.com/legangs/cms/internal/domain/cms/repositories"
@@ -16,6 +17,16 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.CreateUserResponse, error)
 		Password:  request.Password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
+	}
+
+	_, err := repositories.GetUserByEmail(user.Email)
+	if err == nil {
+		return nil, errors.New("email already exists")
+	}
+
+	_, err = repositories.GetUserByUsername(user.Username)
+	if err == nil {
+		return nil, errors.New("username already exists")
 	}
 
 	newUser, err := repositories.CreateUser(user)
