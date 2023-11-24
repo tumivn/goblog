@@ -51,5 +51,11 @@ func (h *UserHandler) Login(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, err.Error())
 	}
 
+	c.SetCookie(&http.Cookie{
+		Name:    "token",
+		Value:   res.Token,
+		Expires: res.Expires,
+	})
+
 	return c.JSON(http.StatusOK, res)
 }
