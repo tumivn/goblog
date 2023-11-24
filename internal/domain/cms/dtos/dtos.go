@@ -3,7 +3,9 @@ package dtos
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"github.com/golang-jwt/jwt"
 	"github.com/legangs/cms/ultilities"
+	"time"
 )
 
 type CreateUserRequest struct {
@@ -18,7 +20,7 @@ func (r CreateUserRequest) Validate() error {
 	return validation.ValidateStruct(&r,
 		validation.Field(&r.Username, validation.Required, validation.Length(5, 20)),
 		validation.Field(&r.Email, validation.Required, is.Email),
-		validation.Field(&r.Password, validation.Required, validation.By(ultilities.ValidatePassword), validation.Length(6, 15)),
+		validation.Field(&r.Password, validation.Required, validation.By(ultilities.ValidatePassword)),
 	)
 
 }
@@ -31,4 +33,31 @@ type CreateUserResponse struct {
 	Lastname  string `json:"lastname"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
+}
+
+type LoginRequest struct {
+	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,email"`
+}
+
+func (r LoginRequest) Validate() error {
+	return validation.ValidateStruct(&r,
+		validation.Field(&r.Email, validation.Required, is.Email),
+		validation.Field(&r.Password, validation.Required, validation.By(ultilities.ValidatePassword)),
+	)
+}
+
+type LoginResponse struct {
+	Email   string    `json:"email"`
+	Token   string    `json:"token"`
+	Expires time.Time `json:"expires"`
+}
+
+type Claims struct {
+	Email  string             `json:"email"`
+	Claims jwt.StandardClaims `json:"claims"`
+}
+
+func (c Claims) Valid() error {
+	return c.Claims.Valid()
 }

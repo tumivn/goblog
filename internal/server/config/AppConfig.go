@@ -13,6 +13,7 @@ type AppConfig struct {
 	DbPort     string
 	DbName     string
 	Port       string
+	JwtSecret  string
 }
 
 func LoadConfig(app *AppConfig) {
@@ -27,4 +28,5 @@ func LoadConfig(app *AppConfig) {
 	app.DbPassword = os.Getenv("DB_PASSWORD")
 	app.DbName = os.Getenv("DB_NAME")
 	app.Port = os.Getenv("PORT")
+	app.JwtSecret = os.Getenv("JWT_SECRET")
 }

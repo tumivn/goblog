@@ -2,9 +2,12 @@ package services
 
 import (
 	"errors"
+	"github.com/golang-jwt/jwt"
 	"github.com/legangs/cms/internal/domain/cms/dtos"
 	"github.com/legangs/cms/internal/domain/cms/models"
 	"github.com/legangs/cms/internal/domain/cms/repositories"
+	"golang.org/x/crypto/bcrypt"
+	"log"
 	"time"
 )
 
@@ -29,6 +32,14 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.CreateUserResponse, error)
 		return nil, errors.New("username already exists")
 	}
 
+	//TODO: hash password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("unable to hash password: %v", err)
+		return nil, errors.New("unable to create user")
+	}
+	user.Password = string(hashedPassword)
+
 	newUser, err := repositories.CreateUser(user)
 
 	if err != nil {
@@ -41,5 +52,41 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.CreateUserResponse, error)
 		Email:     newUser.Email,
 		Firstname: newUser.Firstname,
 		Lastname:  newUser.Lastname,
+	}, nil
+}
+
+func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginResponse, error) {
+	user, err := repositories.GetUserByEmail(request.Email)
+	if err != nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))
+	if err != nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	// Declare the expiration time of the token
+	// here, we have kept it as 5 minutes
+	expirationTime := time.Now().Add(5 * time.Minute)
+	// Create the JWT claims, which includes the username and expiry time
+	claims := &dtos.Claims{
+		Email: request.Email,
+		Claims: jwt.StandardClaims{
+			// In JWT, the expiry time is expressed as unix milliseconds
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte("secret"))
+
+	if err != nil {
+		return nil, errors.New("unable to create token")
+	}
+
+	return &dtos.LoginResponse{
+		Token:   tokenString,
+		Email:   user.Email,
+		Expires: expirationTime,
 	}, nil
 }
