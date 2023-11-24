@@ -10,4 +10,5 @@ func ConfigureCmsRoutes(s *server.Server) {
 
 	s.Echo.POST("api/cms/users", userHandler.CreateUser)
 	s.Echo.POST("api/cms/login", userHandler.Login)
+	s.Echo.GET("api/cms/users", userHandler.GetUsers)
 }

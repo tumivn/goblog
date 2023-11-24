@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	sq "github.com/Masterminds/squirrel"
+	"github.com/legangs/cms/internal/domain/cms/dtos"
 	"github.com/legangs/cms/internal/domain/cms/models"
 	"github.com/legangs/cms/internal/storage"
 )
@@ -35,4 +37,30 @@ func GetUserByEmail(email string) (models.User, error) {
 		return user, err
 	}
 	return user, nil
+}
+
+func GetUsers() ([]dtos.UserResponse, error) {
+	db := storage.GetDB()
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+
+	query := psql.
+		Select("id", "username", "email", "firstname", "lastname", "created_at", "updated_at").
+		From("users")
+
+	rows, err := query.RunWith(db).Query()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var users []dtos.UserResponse
+	for rows.Next() {
+		var user dtos.UserResponse
+		err = rows.Scan(&user.ID, &user.Username, &user.Email, &user.Firstname, &user.Lastname, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
 }

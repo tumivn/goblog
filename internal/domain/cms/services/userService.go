@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func CreatUser(request dtos.CreateUserRequest) (*dtos.CreateUserResponse, error) {
+func CreatUser(request dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 	user := models.User{
 		Username:  request.Username,
 		Email:     request.Email,
@@ -46,12 +46,14 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.CreateUserResponse, error)
 		return nil, err
 	}
 
-	return &dtos.CreateUserResponse{
+	return &dtos.UserResponse{
 		ID:        newUser.ID,
 		Username:  newUser.Username,
 		Email:     newUser.Email,
 		Firstname: newUser.Firstname,
 		Lastname:  newUser.Lastname,
+		CreatedAt: newUser.CreatedAt,
+		UpdatedAt: newUser.UpdatedAt,
 	}, nil
 }
 
@@ -78,7 +80,7 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("secret"))
+	tokenString, err := token.SignedString([]byte(jwtSecret))
 
 	if err != nil {
 		return nil, errors.New("unable to create token")
@@ -89,4 +91,13 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 		Email:   user.Email,
 		Expires: expirationTime,
 	}, nil
+}
+
+func GetUsers() ([]dtos.UserResponse, error) {
+	users, err := repositories.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

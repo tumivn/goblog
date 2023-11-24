@@ -59,3 +59,11 @@ func (h *UserHandler) Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, res)
 }
+
+func (h *UserHandler) GetUsers(c echo.Context) error {
+	users, err := services.GetUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusOK, users)
+}

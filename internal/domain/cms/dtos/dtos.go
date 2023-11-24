@@ -25,14 +25,14 @@ func (r CreateUserRequest) Validate() error {
 
 }
 
-type CreateUserResponse struct {
-	ID        int64  `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+type UserResponse struct {
+	ID        int64     `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	Firstname string    `json:"firstname"`
+	Lastname  string    `json:"lastname"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type LoginRequest struct {
@@ -60,4 +60,8 @@ type Claims struct {
 
 func (c Claims) Valid() error {
 	return c.Claims.Valid()
+}
+
+type GetUsersResponse struct {
+	Users []UserResponse `json:"users"`
 }
