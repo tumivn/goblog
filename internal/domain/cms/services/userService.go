@@ -100,3 +100,20 @@ func GetUsers() ([]dtos.UserResponse, error) {
 
 	return users, nil
 }
+
+func GetUserByEmail(email string) (*dtos.UserResponse, error) {
+	user, err := repositories.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dtos.UserResponse{
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		Firstname: user.Firstname,
+		Lastname:  user.Lastname,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	}, nil
+}

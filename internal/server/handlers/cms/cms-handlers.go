@@ -7,6 +7,7 @@ import (
 	"github.com/legangs/cms/internal/domain/cms/services"
 	"github.com/legangs/cms/internal/server"
 	"net/http"
+	"time"
 )
 
 type UserHandler struct {
@@ -84,9 +85,30 @@ func (h *UserHandler) GetMe(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, nil)
 	}
 
-	return c.JSON(http.StatusOK, &dtos.LoginResponse{
-		Token:   token.Value,
-		Email:   t.Claims.(jwt.MapClaims)["email"].(string),
-		Expires: token.Expires,
+	user, err := services.GetUserByEmail(t.Claims.(jwt.MapClaims)["email"].(string))
+
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, nil)
+	}
+
+	return c.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) Logout(c echo.Context) error {
+	_, err := c.Cookie("token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, nil)
+	}
+	c.SetCookie(&http.Cookie{
+		Name:    "token",
+		Value:   "",
+		Expires: time.Now().Add(-1 * time.Hour),
 	})
+
+	return c.JSON(
+		http.StatusOK,
+		&dtos.MessageResponse{
+			Message: "Logout success",
+		},
+	)
 }

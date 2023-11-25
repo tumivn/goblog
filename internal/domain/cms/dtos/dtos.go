@@ -65,3 +65,7 @@ func (c Claims) Valid() error {
 type GetUsersResponse struct {
 	Users []UserResponse `json:"users"`
 }
+
+type MessageResponse struct {
+	Message string `json:"message"`
+}
