@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/legangs/cms/internal/domain/cms/dtos"
 	"github.com/legangs/cms/internal/domain/cms/services"
@@ -66,4 +67,26 @@ func (h *UserHandler) GetUsers(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, users)
+}
+
+func (h *UserHandler) GetMe(c echo.Context) error {
+
+	token, err := c.Cookie("token")
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, nil)
+	}
+
+	t, err := jwt.Parse(token.Value, func(token *jwt.Token) (interface{}, error) {
+		return []byte(h.server.Config.JwtSecret), nil
+	})
+
+	if err != nil || !t.Valid {
+		return c.JSON(http.StatusUnauthorized, nil)
+	}
+
+	return c.JSON(http.StatusOK, &dtos.LoginResponse{
+		Token:   token.Value,
+		Email:   t.Claims.(jwt.MapClaims)["email"].(string),
+		Expires: token.Expires,
+	})
 }

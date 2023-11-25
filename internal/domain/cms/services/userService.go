@@ -32,7 +32,6 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 		return nil, errors.New("username already exists")
 	}
 
-	//TODO: hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Printf("unable to hash password: %v", err)
