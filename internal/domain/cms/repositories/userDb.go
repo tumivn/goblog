@@ -2,6 +2,7 @@ package repositories
 
 import (
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/legangs/cms/internal/domain/cms/dtos"
 	"github.com/legangs/cms/internal/domain/cms/models"
 	"github.com/legangs/cms/internal/storage"
@@ -9,8 +10,8 @@ import (
 
 func CreateUser(user models.User) (models.User, error) {
 	db := storage.GetDB()
-	sqlStatement := `INSERT INTO users (username, email, firstName, lastName, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING id`
-	err := db.QueryRow(sqlStatement, user.Username, user.Email, user.Firstname, user.Lastname, user.Password, user.CreatedAt, user.UpdatedAt).Scan(&user.ID)
+	sqlStatement := `INSERT INTO users (id, username, email, firstName, lastName, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6,$7, $8) RETURNING id`
+	err := db.QueryRow(sqlStatement, uuid.New(), user.Username, user.Email, user.Firstname, user.Lastname, user.Password, user.CreatedAt, user.UpdatedAt).Scan(&user.ID)
 	if err != nil {
 		return user, err
 	}

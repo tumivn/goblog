@@ -26,7 +26,7 @@ func (r CreateUserRequest) Validate() error {
 }
 
 type UserResponse struct {
-	ID        int64     `json:"id"`
+	ID        string    `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	Firstname string    `json:"firstname"`

@@ -14,7 +14,7 @@ Create database and tables
 CREATE DATABASE goblog;
 
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
+  id uuid DEFAULT uuid_generate_v4 (),
   username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   firstname VARCHAR(255) NOT NULL,
@@ -46,5 +46,5 @@ docker build -t legangs/legangs:cms-v01 .
 # Run docker container, linking with postgres container 
 
 ```bash
-docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-cms -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog legangs/legangs:cms-v01
+docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-cms -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog -e PORT=8080 -e JWT_SECRET=my_secret_key legangs/legangs:cms-v01
 ```
