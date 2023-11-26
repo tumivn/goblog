@@ -3,8 +3,8 @@ package repositories
 import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/legangs/cms/internal/domain/cms/dtos"
-	"github.com/legangs/cms/internal/domain/cms/models"
+	"github.com/legangs/cms/internal/domain/auth/dtos"
+	"github.com/legangs/cms/internal/domain/auth/models"
 	"github.com/legangs/cms/internal/storage"
 )
 

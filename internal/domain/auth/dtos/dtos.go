@@ -54,7 +54,7 @@ type LoginResponse struct {
 }
 
 type Claims struct {
-	Email  string             `json:"email"`
+	Issuer string             `json:"issuer"`
 	Claims jwt.StandardClaims `json:"claims"`
 }
 

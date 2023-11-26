@@ -1,10 +1,10 @@
-package cms
+package auth
 
 import (
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/domain/cms/dtos"
-	"github.com/legangs/cms/internal/domain/cms/services"
+	"github.com/legangs/cms/internal/domain/auth/dtos"
+	"github.com/legangs/cms/internal/domain/auth/services"
 	"github.com/legangs/cms/internal/server"
 	"net/http"
 	"time"
@@ -85,7 +85,7 @@ func (h *UserHandler) GetMe(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, nil)
 	}
 
-	user, err := services.GetUserByEmail(t.Claims.(jwt.MapClaims)["email"].(string))
+	user, err := services.GetUserByEmail(t.Claims.(jwt.MapClaims)["issuer"].(string))
 
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, nil)

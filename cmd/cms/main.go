@@ -10,7 +10,7 @@ import (
 func main() {
 	s := server.NewServer()
 	s.Init()
-	routes.ConfigureCmsRoutes(s)
+	routes.ConfigureAuthRoutes(s)
 
 	s.Echo.GET("/", handlers.Home)
 

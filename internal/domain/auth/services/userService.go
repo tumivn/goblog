@@ -2,10 +2,10 @@ package services
 
 import (
 	"errors"
-	"github.com/golang-jwt/jwt"
-	"github.com/legangs/cms/internal/domain/cms/dtos"
-	"github.com/legangs/cms/internal/domain/cms/models"
-	"github.com/legangs/cms/internal/domain/cms/repositories"
+	"github.com/legangs/cms/internal/domain/auth/dtos"
+	"github.com/legangs/cms/internal/domain/auth/models"
+	"github.com/legangs/cms/internal/domain/auth/repositories"
+	"github.com/legangs/cms/internal/utility"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
@@ -67,19 +67,10 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 		return nil, errors.New("invalid email or password")
 	}
 
-	// Declare the expiration time of the token
-	// here, we have kept it as 5 minutes
+	// TODO: add expiration time to config
 	expirationTime := time.Now().Add(5 * time.Minute)
-	// Create the JWT claims, which includes the username and expiry time
-	claims := &dtos.Claims{
-		Email: request.Email,
-		Claims: jwt.StandardClaims{
-			// In JWT, the expiry time is expressed as unix milliseconds
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(jwtSecret))
+
+	tokenString, err := utility.GenerateJwt(request.Email, jwtSecret, expirationTime)
 
 	if err != nil {
 		return nil, errors.New("unable to create token")
