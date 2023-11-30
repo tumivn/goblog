@@ -5,7 +5,8 @@ Learning Go by building a simple blog APIs with GoLang, Echo
 Execute this command in your terminal to run postgres on docker 
 
 ```bash
-docker run --rm --name postgres -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres 
+
+
 ```
 
 Create database and tables

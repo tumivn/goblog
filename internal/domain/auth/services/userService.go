@@ -5,7 +5,7 @@ import (
 	"github.com/legangs/cms/internal/domain/auth/dtos"
 	"github.com/legangs/cms/internal/domain/auth/models"
 	"github.com/legangs/cms/internal/domain/auth/repositories"
-	"github.com/legangs/cms/internal/utility"
+	"github.com/legangs/cms/ultilities"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
@@ -70,7 +70,7 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 	// TODO: add expiration time to config
 	expirationTime := time.Now().Add(5 * time.Minute)
 
-	tokenString, err := utility.GenerateJwt(request.Email, jwtSecret, expirationTime)
+	tokenString, err := ultilities.GenerateJwt(request.Email, jwtSecret, expirationTime)
 
 	if err != nil {
 		return nil, errors.New("unable to create token")

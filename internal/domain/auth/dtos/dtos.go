@@ -3,7 +3,6 @@ package dtos
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"github.com/golang-jwt/jwt"
 	"github.com/legangs/cms/ultilities"
 	"time"
 )
@@ -51,15 +50,6 @@ type LoginResponse struct {
 	Email   string    `json:"email"`
 	Token   string    `json:"token"`
 	Expires time.Time `json:"expires"`
-}
-
-type Claims struct {
-	Issuer string             `json:"issuer"`
-	Claims jwt.StandardClaims `json:"claims"`
-}
-
-func (c Claims) Valid() error {
-	return c.Claims.Valid()
 }
 
 type GetUsersResponse struct {

@@ -1,26 +1,26 @@
-package auth
+package handlers
 
 import (
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/legangs/cms/internal/domain/auth/dtos"
 	"github.com/legangs/cms/internal/domain/auth/services"
 	"github.com/legangs/cms/internal/server"
+	"github.com/legangs/cms/ultilities"
 	"net/http"
 	"time"
 )
 
-type UserHandler struct {
+type AuthHandler struct {
 	server *server.Server
 }
 
-func NewUserHandler(s *server.Server) *UserHandler {
-	return &UserHandler{
+func NewAuthHandler(s *server.Server) *AuthHandler {
+	return &AuthHandler{
 		server: s,
 	}
 }
 
-func (h *UserHandler) CreateUser(c echo.Context) error {
+func (h *AuthHandler) CreateUser(c echo.Context) error {
 	u := dtos.CreateUserRequest{}
 	c.Bind(&u)
 
@@ -38,11 +38,15 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, newUser)
 }
 
-func (h *UserHandler) Login(c echo.Context) error {
+func (h *AuthHandler) Login(c echo.Context) error {
 	u := dtos.LoginRequest{}
-	c.Bind(&u)
 
-	err := u.Validate()
+	err := c.Bind(&u)
+	if err != nil {
+		return err
+	}
+
+	err = u.Validate()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -62,7 +66,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func (h *UserHandler) GetUsers(c echo.Context) error {
+func (h *AuthHandler) GetUsers(c echo.Context) error {
 	users, err := services.GetUsers()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
@@ -70,22 +74,16 @@ func (h *UserHandler) GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
-func (h *UserHandler) GetMe(c echo.Context) error {
+func (h *AuthHandler) GetMe(c echo.Context) error {
 
 	token, err := c.Cookie("token")
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, nil)
 	}
 
-	t, err := jwt.Parse(token.Value, func(token *jwt.Token) (interface{}, error) {
-		return []byte(h.server.Config.JwtSecret), nil
-	})
+	issuer, err := ultilities.GetIssuer(token.Value, h.server.Config.JwtSecret)
 
-	if err != nil || !t.Valid {
-		return c.JSON(http.StatusUnauthorized, nil)
-	}
-
-	user, err := services.GetUserByEmail(t.Claims.(jwt.MapClaims)["issuer"].(string))
+	user, err := services.GetUserByEmail(issuer)
 
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, nil)
@@ -94,7 +92,7 @@ func (h *UserHandler) GetMe(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-func (h *UserHandler) Logout(c echo.Context) error {
+func (h *AuthHandler) Logout(c echo.Context) error {
 	_, err := c.Cookie("token")
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, nil)
