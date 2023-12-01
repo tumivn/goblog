@@ -11,18 +11,25 @@ import (
 	"time"
 )
 
-func CreatUser(request dtos.CreateUserRequest) (*dtos.UserResponse, error) {
+func CreatUser(dto dtos.CreateUserRequest) (*dtos.UserResponse, error) {
+
+	err := dto.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	user := models.User{
-		Username:  request.Username,
-		Email:     request.Email,
-		Firstname: request.Firstname,
-		Lastname:  request.Lastname,
-		Password:  request.Password,
+		Username:  dto.Username,
+		Email:     dto.Email,
+		Firstname: dto.Firstname,
+		Lastname:  dto.Lastname,
+		Password:  dto.Password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
+	user.SetPassword(dto.Password)
 
-	_, err := repositories.GetUserByEmail(user.Email)
+	_, err = repositories.GetUserByEmail(user.Email)
 	if err == nil {
 		return nil, errors.New("email already exists")
 	}
@@ -35,7 +42,7 @@ func CreatUser(request dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Printf("unable to hash password: %v", err)
-		return nil, errors.New("unable to create user")
+		return nil, errors.New("internal error: unable to create user")
 	}
 	user.Password = string(hashedPassword)
 
@@ -62,8 +69,7 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 		return nil, errors.New("invalid email or password")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))
-	if err != nil {
+	if user.CheckPassword(request.Password) == false {
 		return nil, errors.New("invalid email or password")
 	}
 

@@ -21,7 +21,6 @@ func (r CreateUserRequest) Validate() error {
 		validation.Field(&r.Email, validation.Required, is.Email),
 		validation.Field(&r.Password, validation.Required, validation.By(ultilities.ValidatePassword)),
 	)
-
 }
 
 type UserResponse struct {
