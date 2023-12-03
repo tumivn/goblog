@@ -1,9 +1,10 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type AppConfig struct {
@@ -17,7 +18,15 @@ type AppConfig struct {
 }
 
 func LoadConfig(app *AppConfig) {
-	err := godotenv.Load()
+	env := os.Getenv("GOBLOG_ENV")
+	envFile := ".env"
+
+	log.Println("env: " + env)
+	if "" != env {
+		envFile = ".env." + env
+	}
+
+	err := godotenv.Load(envFile)
 	if err != nil {
 		log.Println("Error loading .env file, be ensure all environment variables setting up properly" + err.Error())
 	}
