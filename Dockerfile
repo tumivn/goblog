@@ -4,7 +4,7 @@ COPY go.mod go.sum /go/src/app/
 WORKDIR /go/src/app/
 RUN go mod download
 COPY . /go/src/app/
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl -o build/app github.com/legangs/auth/cmd/auth
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl -o build/api github.com/legangs/cms/cmd/api
 
 
 FROM alpine
