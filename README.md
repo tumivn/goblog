@@ -1,36 +1,57 @@
 # goblog
 Learning Go by building a simple blog APIs with GoLang, Echo
 
-# Create Database and Main Tables
-Execute this command in your terminal to run postgres on docker 
+# Install make on Windows 
 
 ```bash
-docker run --rm --name postgres -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+choco install make
 ```
 
-Create database and tables
+#Install go-migrate cli
 
-```sql
-CREATE DATABASE goblog;
-
-CREATE TABLE users (
-  id uuid DEFAULT uuid_generate_v4 (),
-  username VARCHAR(255) NOT NULL UNIQUE,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  firstname VARCHAR(255) NOT NULL,
-  lastname VARCHAR(255) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL
-);
+```bash
+irm get.scoop.sh | iex
+scoop install go-migrate
 ```
 
-# Run the cms app 
+
+# Create Database 
+Run postgres on docker 
+
+```bash
+make postgres
+```
+
+Create database 
+
+```bash
+make createdb
+```
+Migrate database to the latest version
+
+```bash
+make migrateup
+```
+
+If you want to migrate to a go back one version, use this command
+
+```bash
+make migratedown
+```
+Just in case you want to drop the database because it is dirty or something
+
+```bash
+make dropdb
+```
+
+To have more flexibility, you can use the migrate cli directly
+
+# run the app
 
 ```bash
 go run github.com/legangs/cms/cmd/api
-go run github.com/legangs/cms/cmd/dbmigrate-up
-```
+``` 
 
 # Build the cms app 
 
