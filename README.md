@@ -28,7 +28,8 @@ CREATE TABLE users (
 # Run the cms app 
 
 ```bash
-go run github.com/legangs/auth/cmd/auth
+go run github.com/legangs/cms/cmd/api
+go run github.com/legangs/cms/cmd/dbmigrate-up
 ```
 
 # Build the cms app 
