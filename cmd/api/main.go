@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-c {
+func main() {
 	s := server.NewServer()
 	s.Init()
 	routes.ConfigureAuthRoutes(s)
