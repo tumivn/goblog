@@ -3,7 +3,7 @@ package dtos
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"github.com/legangs/cms/ultilities"
+	"github.com/tumivn/goblog/ultilities"
 	"time"
 )
 

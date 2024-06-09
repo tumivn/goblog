@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/domain/auth/dtos"
-	"github.com/legangs/cms/internal/domain/auth/services"
-	"github.com/legangs/cms/internal/server"
+	"github.com/tumivn/goblog/internal/domain/auth/dtos"
+	"github.com/tumivn/goblog/internal/domain/auth/services"
+	"github.com/tumivn/goblog/internal/server"
 	"net/http"
 	"strings"
 )

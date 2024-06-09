@@ -2,12 +2,10 @@ package services
 
 import (
 	"errors"
-	"github.com/legangs/cms/internal/domain/auth/dtos"
-	"github.com/legangs/cms/internal/domain/auth/models"
-	"github.com/legangs/cms/internal/domain/auth/repositories"
-	"github.com/legangs/cms/ultilities"
-	"golang.org/x/crypto/bcrypt"
-	"log"
+	"github.com/tumivn/goblog/internal/domain/auth/dtos"
+	"github.com/tumivn/goblog/internal/domain/auth/models"
+	"github.com/tumivn/goblog/internal/domain/auth/repositories"
+	"github.com/tumivn/goblog/ultilities"
 	"time"
 )
 
@@ -27,7 +25,8 @@ func CreatUser(dto dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	user.SetPassword(dto.Password)
+
+	user.SetPassword(dto.Password) // hash password then save to user.Password
 
 	_, err = repositories.GetUserByEmail(user.Email)
 	if err == nil {
@@ -38,13 +37,6 @@ func CreatUser(dto dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 	if err == nil {
 		return nil, errors.New("username already exists")
 	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		log.Printf("unable to hash password: %v", err)
-		return nil, errors.New("internal error: unable to create user")
-	}
-	user.Password = string(hashedPassword)
 
 	newUser, err := repositories.CreateUser(user)
 

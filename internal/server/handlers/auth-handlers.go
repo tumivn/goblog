@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/domain/auth/dtos"
-	"github.com/legangs/cms/internal/domain/auth/services"
-	"github.com/legangs/cms/internal/server"
-	"github.com/legangs/cms/ultilities"
+	"github.com/tumivn/goblog/internal/domain/auth/dtos"
+	"github.com/tumivn/goblog/internal/domain/auth/services"
+	"github.com/tumivn/goblog/internal/server"
+	"github.com/tumivn/goblog/ultilities"
 	"net/http"
 	"time"
 )
@@ -25,7 +25,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 
 	err := c.Bind(&u)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	err = u.Validate()
@@ -74,7 +74,7 @@ func (h *AuthHandler) Logout(c echo.Context) error {
 	c.SetCookie(&http.Cookie{
 		Name:    "token",
 		Value:   "",
-		Expires: time.Now().Add(-1 * time.Hour),
+		Expires: time.Now().Add(1 * time.Hour),
 	})
 
 	return c.JSON(

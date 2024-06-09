@@ -3,26 +3,33 @@ package repositories
 import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
-	"github.com/legangs/cms/internal/domain/auth/dtos"
-	"github.com/legangs/cms/internal/domain/auth/models"
-	"github.com/legangs/cms/internal/storage"
+	"github.com/tumivn/goblog/internal/domain/auth/dtos"
+	"github.com/tumivn/goblog/internal/domain/auth/models"
+	"github.com/tumivn/goblog/internal/storage"
 )
 
-func CreateUser(user models.User) (models.User, error) {
+func CreateUser(user models.User) (*models.User, error) {
 	db := storage.GetDB()
 	sqlStatement := `INSERT INTO users (id, username, email, firstName, lastName, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6,$7, $8) RETURNING id`
 	err := db.QueryRow(sqlStatement, uuid.New(), user.Username, user.Email, user.Firstname, user.Lastname, user.Password, user.CreatedAt, user.UpdatedAt).Scan(&user.ID)
 	if err != nil {
-		return user, err
+		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 func GetUserByUsername(username string) (models.User, error) {
 	db := storage.GetDB()
-	sqlStatement := `SELECT * FROM users WHERE username=$1`
+	sql, _, err := sq.Select("*").From("users").Where(sq.Eq{"username": username}).ToSql()
+
 	var user models.User
-	err := db.QueryRow(sqlStatement, username).Scan(&user.ID, &user.Username, &user.Email, &user.Firstname, &user.Lastname, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+
+	if err != nil {
+		return user, err
+	}
+	//sqlStatement := `SELECT * FROM users WHERE username=$1`
+
+	err = db.QueryRow(sql, username).Scan(&user.ID, &user.Username, &user.Email, &user.Firstname, &user.Lastname, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return user, err
 	}

@@ -2,6 +2,7 @@ package models
 
 import (
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"time"
 )
 
@@ -27,5 +28,8 @@ func (u *User) SetPassword(password string) error {
 
 func (u *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	if err != nil {
+		log.Fatal(err)
+	}
 	return err == nil
 }

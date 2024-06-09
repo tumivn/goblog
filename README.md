@@ -66,25 +66,25 @@ To have more flexibility, you can use the migrate cli directly
 # run the app
 
 ```bash
-go run github.com/legangs/cms/cmd/api
+go run github.com/tumivn/goblog/cmd/api
 ``` 
 
 # Build the cms app 
 
 ```bash
-go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl github.com/legangs/auth/cmd/auth
+go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl github.com/tumivn/goblog/cmd/api
 ```
 
 
 # Build docker image
 ```bash
-docker build -t legangs/legangs:auth-v01 .
+docker build -t tumivn/tumivn:goblog-v01 .
 ``` 
 
 # Run docker container, linking with postgres container 
 
 ```bash
-docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-auth -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog -e PORT=8080 -e JWT_SECRET=my_secret_key legangs/legangs:auth-v01
+docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-auth -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog -e PORT=8080 -e JWT_SECRET=my_secret_key tuminv/tumivn:auth-v01
 ```
 
 # Database migration

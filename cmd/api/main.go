@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/legangs/cms/internal/server"
-	"github.com/legangs/cms/internal/server/handlers"
-	"github.com/legangs/cms/internal/server/routes"
 	_ "github.com/lib/pq"
+	"github.com/tumivn/goblog/internal/server"
+	"github.com/tumivn/goblog/internal/server/handlers"
+	"github.com/tumivn/goblog/internal/server/routes"
 )
 
 func main() {

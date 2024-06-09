@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/legangs/cms/internal/server"
-	"github.com/legangs/cms/internal/server/handlers"
-	"github.com/legangs/cms/internal/server/middlewares"
+	"github.com/tumivn/goblog/internal/server"
+	"github.com/tumivn/goblog/internal/server/handlers"
+	"github.com/tumivn/goblog/internal/server/middlewares"
 )
 
 func ConfigureAuthRoutes(s *server.Server) {

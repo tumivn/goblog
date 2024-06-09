@@ -3,8 +3,8 @@ package server
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/server/config"
-	"github.com/legangs/cms/internal/storage"
+	"github.com/tumivn/goblog/internal/server/config"
+	"github.com/tumivn/goblog/internal/storage"
 )
 
 type Server struct {
@@ -28,6 +28,6 @@ func (s *Server) Init() {
 	storage.InitDB(&s.Config)
 }
 
-func (s *Server) Start(addr string) error {
-	return s.Echo.Start(":" + addr)
+func (s *Server) Start(addr string) {
+	s.Echo.Logger.Fatal(s.Echo.Start(":" + addr))
 }

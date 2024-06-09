@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/legangs/cms/internal/server"
-	"github.com/legangs/cms/ultilities"
+	"github.com/tumivn/goblog/internal/server"
+	"github.com/tumivn/goblog/ultilities"
 )
 
 type Middleware struct {

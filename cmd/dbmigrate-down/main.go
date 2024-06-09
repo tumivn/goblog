@@ -6,9 +6,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
-	"github.com/legangs/cms/internal/server"
-	"github.com/legangs/cms/internal/storage"
 	_ "github.com/lib/pq"
+	"github.com/tumivn/goblog/internal/server"
+	"github.com/tumivn/goblog/internal/storage"
 )
 
 func main() {
