@@ -91,3 +91,10 @@ docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-auth -e DB_
 Using the [golang-migrate/migrate](https://github.com/golang-migrate/migrate) library apply for database migration 
 
 Create seperated handler and entry point to run migration.
+
+Create a migration files
+
+```bash
+$ migrate create -ext sql -dir internal/storage/migrations/ -seq migration_name
+```
+
