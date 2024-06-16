@@ -13,6 +13,11 @@ dropdb:
 	docker exec -it postgres psql -U postgres -c "DROP DATABASE goblog;"
 	@echo "Database dropped."
 
+seed:
+	@echo "Seeding database..."
+	go run github.com/legangs/cms/cmd/dbseed
+	@echo "Database seeded."
+
 migrateup:
 	@echo "Migrating up..."
 	go run github.com/legangs/cms/cmd/dbmigrate-up
