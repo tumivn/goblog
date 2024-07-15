@@ -84,7 +84,7 @@ docker build -t tumivn/tumivn:goblog-v01 .
 # Run docker container, linking with postgres container 
 
 ```bash
-docker run --rm -p 8080:8080 --link postgres:postgres --name legangs-auth -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog -e PORT=8080 -e JWT_SECRET=my_secret_key tuminv/tumivn:auth-v01
+docker run --rm -p 8181:8080 --link postgres:postgres --name goblog -e DB_HOST=postgres -e DB_PORT=5432 -e DB_USER=postgres -e DB_PASSWORD=docker -e DB_NAME=goblog -e PORT=8080 -e JWT_SECRET=my_secret_key tumivn/tumivn:goblog-v01
 ```
 
 # Database migration
@@ -96,5 +96,25 @@ Create a migration files
 
 ```bash
 $ migrate create -ext sql -dir internal/storage/migrations/ -seq migration_name
+```
+Login to get token
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"email": "tumivn@gmail.com","password": "Abc@12345"}' \
+  localhost:8181/api/auth/login
+```
+
+
+Try to get users 
+
+```bash
+ curl -v --cookie "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjA4MTEwNjUsImlzc3VlciI6InR1bWl2bkBnbWFpbC5jb20ifQ.3BSVwwYVsheeQXwhhq_0R_TsBsyOOpcRsEgwTxfbyXE; Expires=Fri, 12 Jul 2024 19:04:25 GMT" http://localhost:8181/api/auth/users | jq
+```
+
+Test
+
+```bash 
+ ab -n 5000 -c 100 -k -H "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjA4MTEwNjUsImlzc3VlciI6InR1bWl2bkBnbWFpbC5jb20ifQ.3BSVwwYVsheeQXwhhq_0R_TsBsyOOpcRsEgwTxfbyXE; Expires=Fri, 12 Jul 2024 19:04:25 GMT"  http://127.0.0.1:8181/api/auth/users
 ```
 

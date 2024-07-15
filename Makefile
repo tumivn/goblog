@@ -15,7 +15,7 @@ dropdb:
 
 seed:
 	@echo "Seeding database..."
-	go run github.com/legangs/cms/cmd/dbseed
+	go run github.com/tumivn/goblog/cmd/dbseed
 	@echo "Database seeded."
 
 migrateup:

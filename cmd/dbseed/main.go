@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bxcodec/faker/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
@@ -109,10 +110,29 @@ func main() {
 		},
 	}
 
-	for _, user := range users {
-		_, err := services.CreatUser(user)
+	for i := 0; i < 100; i++ {
+		dto := dtos.CreateUserRequest{
+			Username:  faker.Username(),
+			Email:     faker.Email(),
+			Firstname: faker.FirstName(),
+			Lastname:  faker.LastName(),
+			Password:  "abc@ABC*123",
+		}
+		_, err := services.CreatUser(dto)
 		if err != nil {
 			log.Error("Can't create user: ", err)
+		}
+	}
+
+	for _, user := range users {
+		u, _ := services.GetUserByEmail(user.Email)
+		if u != nil {
+			log.Infof("User ", u.Email, "is already existed")
+		} else {
+			_, err := services.CreatUser(user)
+			if err != nil {
+				log.Error("Can't create user: ", err)
+			}
 		}
 	}
 }
