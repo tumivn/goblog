@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS profile ;
+DROP TABLE IF EXISTS tag;
+DROP TABLE IF EXISTS article;
+DROP TABLE IF EXISTS article_revision;

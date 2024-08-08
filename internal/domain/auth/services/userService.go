@@ -55,7 +55,7 @@ func CreatUser(dto dtos.CreateUserRequest) (*dtos.UserResponse, error) {
 	}, nil
 }
 
-func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginResponse, error) {
+func AuthenticateUser(request *dtos.LoginRequest, jwtSecret string) (*dtos.LoginResponse, error) {
 	user, err := repositories.GetUserByEmail(request.Email)
 	if err != nil {
 		return nil, errors.New("invalid email or password")
@@ -65,7 +65,6 @@ func AuthenticateUser(request dtos.LoginRequest, jwtSecret string) (*dtos.LoginR
 		return nil, errors.New("invalid email or password")
 	}
 
-	// TODO: add expiration time to config
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	tokenString, err := ultilities.GenerateJwt(request.Email, jwtSecret, expirationTime)

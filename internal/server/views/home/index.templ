@@ -1,0 +1,19 @@
+package home
+
+import (
+	"github.com/tumivn/goblog/internal/server/views/layout"
+	"github.com/tumivn/goblog/internal/domain/auth/dtos"
+)
+
+templ HomePage(data ViewModel) {
+    if data.User != nil{
+        <div>Hello, { data.User.Username }, your email is {data.User.Email}</div>
+
+    }else{
+        <div>please login</div>
+    }
+}
+
+templ HomePageIndex(title string, user *dtos.UserResponse , component templ.Component){
+    @layout.Base(title, user, component)
+}

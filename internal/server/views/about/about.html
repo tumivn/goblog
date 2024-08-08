@@ -1,0 +1,42 @@
+{{define "title"}}
+{{index . "name"}}
+{{end}}
+
+{{define "auth"}}
+{{if .currentUser}}
+Hi {{.currentUser.Firstname}}, <a href='auth/logout?{{.currentTime}}' hx-push-url="false" class="text-sm font-semibold leading-6 text-gray-900">Logout <span aria-hidden="true">&rarr;</span></a>
+{{else}}
+<a href='auth/login?{{.currentTime}}' hx-push-url="false" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+{{end}}
+{{end}}
+
+{{define "body"}}
+<h1>{{index . "msg"}}</h1>
+<h2>This is the about page.</h2>
+
+Number of users: {{ .users | len -}}
+
+{{if eq (.users | len) 0}}
+No users availble
+{{else}}
+<h3>User list</h3>
+<table>
+    <thead>
+    <tr>
+        <th>email</th>
+        <th>first name</th>
+        <th>last name</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range .users}}
+    <tr>
+        <td>{{.Email}}</td>
+        <td>{{.Firstname}}</td>
+        <td>{{.Lastname}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+</table>
+{{end}}
+{{end}}
