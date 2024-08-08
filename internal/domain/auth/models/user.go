@@ -12,6 +12,7 @@ type User struct {
 	Email     string    `json:"email" validate:"required,email"`
 	Firstname string    `json:"firstname"`
 	Lastname  string    `json:"lastname"`
+	Birthdate time.Time `json:"birthdate"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

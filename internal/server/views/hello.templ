@@ -1,0 +1,13 @@
+package views
+
+import (
+	"github.com/tumivn/goblog/internal/server/views/layout"
+)
+
+templ Hello(name string) {
+  <div>Hello, { name }</div>
+}
+
+templ HelloIndex(title string, component templ.Component){
+    @layout.Base(title, nil, component)
+}

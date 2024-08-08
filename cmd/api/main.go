@@ -3,7 +3,6 @@ package main
 import (
 	_ "github.com/lib/pq"
 	"github.com/tumivn/goblog/internal/server"
-	"github.com/tumivn/goblog/internal/server/handlers"
 	"github.com/tumivn/goblog/internal/server/routes"
 )
 
@@ -12,7 +11,10 @@ func main() {
 	s.Init()
 	routes.ConfigureAuthRoutes(s)
 
-	s.Echo.GET("/", handlers.Home)
+	s.Echo.Static("/static", "./internal/server/static")
+
+	//dir, _ := os.Getwd()
+	//println(dir)
 
 	s.Start(s.Config.Port)
 }

@@ -1,0 +1,5 @@
+
+.hideThis { animation: hideCss 0s 6s forwards; }
+
+@keyframes hideCss  { to { visibility: hidden; } }
+/* visibility / overflow: hidden; */
