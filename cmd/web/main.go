@@ -36,11 +36,15 @@ func main() {
 	// Ref: https://gist.github.com/rand99/808e6e9702c00ce64803d94abff65678
 	templates := make(map[string]*template.Template)
 	templates["about.html"] = template.Must(template.ParseFiles("./internal/server/views/about/about.html", "./internal/server/views/base.html"))
+	templates["sign-in.html"] = template.Must(template.ParseFiles("./internal/server/views/auth/sign-in.html", "./internal/server/views/base.html"))
+	templates["sign-up.html"] = template.Must(template.ParseFiles("./internal/server/views/auth/sign-up.html", "./internal/server/views/base.html"))
+	templates["home.html"] = template.Must(template.ParseFiles("./internal/server/views/home/home.html", "./internal/server/views/base.html"))
 	s.Echo.Renderer = &TemplateRegistry{
 		templates: templates,
 	}
 
 	routes.ConfigureAuthRoutes(s)
+	routes.ConfigureWebRoutes(s)
 	//dir, _ := os.Getwd()
 	//println(dir)
 

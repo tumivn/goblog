@@ -27,3 +27,22 @@ func GetCurrentUser(c echo.Context, s server.Server) (*dtos.UserResponse, error)
 	}
 	return user, nil
 }
+
+func CreateUser(c echo.Context) (*dtos.UserResponse, error) {
+	u := dtos.CreateUserRequest{}
+	c.Bind(&u)
+
+	err := u.Validate()
+
+	if err != nil {
+		return nil, err
+	}
+
+	newUser, err := services.CreatUser(u)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return newUser, nil
+}

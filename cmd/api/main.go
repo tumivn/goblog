@@ -11,7 +11,7 @@ func main() {
 	s.Init()
 	routes.ConfigureAuthRoutes(s)
 
-	s.Echo.Static("/static", "./internal/server/static")
+	//s.Echo.Static("/static", "./internal/server/static")
 
 	//dir, _ := os.Getwd()
 	//println(dir)

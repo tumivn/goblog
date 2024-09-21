@@ -65,7 +65,7 @@ func AuthenticateUser(request *dtos.LoginRequest, jwtSecret string) (*dtos.Login
 		return nil, errors.New("invalid email or password")
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(5 * time.Hour)
 
 	tokenString, err := ultilities.GenerateJwt(request.Email, jwtSecret, expirationTime)
 

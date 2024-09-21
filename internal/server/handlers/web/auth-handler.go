@@ -6,8 +6,6 @@ import (
 	"github.com/tumivn/goblog/internal/domain/auth/services"
 	"github.com/tumivn/goblog/internal/server"
 	services2 "github.com/tumivn/goblog/internal/server/services"
-	"github.com/tumivn/goblog/internal/server/views/auth"
-	"log"
 	"net/http"
 	"time"
 )
@@ -23,53 +21,134 @@ func NewAuthHandler(s *server.Server) *AuthHandler {
 }
 
 func (h *AuthHandler) GetSignUp(c echo.Context) error {
+	var tick = time.Now().Format("20060102150405")
 	user, _ := services2.GetCurrentUser(c, *h.server)
 	if user != nil {
 		return c.Redirect(http.StatusMovedPermanently, "/")
 	}
-	//TODO: SignUpVM
-	data := new(auth.SignUpViewModel)
-	hi := auth.SignInIndex("Sign In", auth.SignUp(*data))
-
-	return RenderComponent(c, http.StatusOK, hi)
+	return c.Render(http.StatusOK, "sign-up.html", map[any]interface{}{
+		"name":         "Login",
+		"currentTime":  tick,
+		"email":        "",
+		"firstname":    "",
+		"lastname":     "",
+		"username":     "",
+		"password":     "",
+		"errorMessage": "",
+	})
 }
 
-func (h *AuthHandler) GetSignIn(c echo.Context) error {
+func (h *AuthHandler) PostSignUp(c echo.Context) error {
 	user, _ := services2.GetCurrentUser(c, *h.server)
 	if user != nil {
 		return c.Redirect(http.StatusMovedPermanently, "/")
 	}
-	data := new(auth.SignInViewModel)
-	hi := auth.SignInIndex("Sign In", auth.SignIn(*data))
 
-	return RenderComponent(c, http.StatusOK, hi)
-}
-
-func (h *AuthHandler) PostSignIn(c echo.Context) error {
-
-	var u = new(dtos.LoginRequest)
+	var tick = time.Now().Format("20060102150405")
+	email := c.FormValue("email")
+	password := c.FormValue("password")
+	errorMessage := ""
+	var u = new(dtos.CreateUserRequest)
 	{
-		u.Email = c.FormValue("email")
-		u.Password = c.FormValue("password")
+		u.Email = email
+		u.Password = password
+		u.Username = c.FormValue("username")
+		u.Firstname = c.FormValue("firstname")
+		u.Lastname = c.FormValue("lastname")
 	}
-	data := new(auth.SignInViewModel)
-	data.Email = u.Email
 
 	err := u.Validate()
 	if err != nil {
-		log.Println(err.Error())
+		errorMessage = err.Error()
+		return c.Render(http.StatusOK, "sign-up.html", map[any]interface{}{
+			"name":         "Sign Up",
+			"currentTime":  tick,
+			"email":        u.Email,
+			"password":     "",
+			"username":     u.Username,
+			"firstname":    u.Firstname,
+			"lastname":     u.Lastname,
+			"errorMessage": errorMessage,
+		})
+	}
 
-		data.ErrorMessage = err.Error()
-		hi := auth.SignInIndex("Sign In", auth.SignIn(*data))
-		return RenderComponent(c, http.StatusOK, hi)
+	//Create user
+	newUser, err := services.CreatUser(*u)
+
+	if err != nil {
+		errorMessage = err.Error()
+		return c.Render(http.StatusOK, "sign-up.html", map[any]interface{}{
+			"name":         "Sign Up",
+			"currentTime":  tick,
+			"email":        u.Email,
+			"password":     "",
+			"username":     u.Username,
+			"firstname":    u.Firstname,
+			"lastname":     u.Lastname,
+			"errorMessage": errorMessage,
+		})
+	}
+
+	return c.Render(http.StatusOK, "sign-up-success.html", newUser)
+
+	return c.Redirect(http.StatusMovedPermanently, "/")
+}
+
+func (h *AuthHandler) GetSignIn(c echo.Context) error {
+	var tick = time.Now().Format("20060102150405")
+	user, _ := services2.GetCurrentUser(c, *h.server)
+	if user != nil {
+		return c.Redirect(http.StatusMovedPermanently, "/")
+	}
+	return c.Render(http.StatusOK, "sign-in.html", map[any]interface{}{
+		"name":         "Login",
+		"currentTime":  tick,
+		"email":        "",
+		"password":     "",
+		"errorMessage": "",
+	})
+}
+
+func (h *AuthHandler) PostSignIn(c echo.Context) error {
+	var tick = time.Now().Format("20060102150405")
+	user, _ := services2.GetCurrentUser(c, *h.server)
+	if user != nil {
+		return c.Redirect(http.StatusMovedPermanently, "/")
+	}
+	email := c.FormValue("email")
+	password := c.FormValue("password")
+	errorMessage := ""
+	var u = new(dtos.LoginRequest)
+	{
+		u.Email = email
+		u.Password = password
+	}
+
+	err := u.Validate()
+	if err != nil {
+		errorMessage = err.Error()
+		println(errorMessage)
+		return c.Render(http.StatusOK, "sign-in.html", map[any]interface{}{
+			"name":         "Login",
+			"currentTime":  tick,
+			"email":        email,
+			"password":     "",
+			"errorMessage": errorMessage,
+		})
 	}
 
 	res, err := services.AuthenticateUser(u, h.server.Config.JwtSecret)
 
 	if err != nil {
-		data.ErrorMessage = err.Error()
-		hi := auth.SignInIndex("Sign In", auth.SignIn(*data))
-		return RenderComponent(c, http.StatusOK, hi)
+		errorMessage = err.Error()
+		println(errorMessage)
+		return c.Render(http.StatusOK, "sign-in.html", map[any]interface{}{
+			"name":         "Login",
+			"currentTime":  tick,
+			"email":        email,
+			"password":     "",
+			"errorMessage": errorMessage,
+		})
 	}
 
 	//Signed in successfully
@@ -84,11 +163,6 @@ func (h *AuthHandler) PostSignIn(c echo.Context) error {
 	return c.Redirect(http.StatusMovedPermanently, "/")
 }
 
-func (h *AuthHandler) GetSignButton(c echo.Context) error {
-	user, _ := services2.GetCurrentUser(c, *h.server)
-	return RenderComponent(c, http.StatusOK, auth.SignInButton(user))
-}
-
 func (h *AuthHandler) GetSignOut(c echo.Context) error {
 	user, _ := services2.GetCurrentUser(c, *h.server)
 	if user != nil {
@@ -96,7 +170,7 @@ func (h *AuthHandler) GetSignOut(c echo.Context) error {
 		c.SetCookie(&http.Cookie{
 			Name:    "token",
 			Value:   "",
-			Expires: time.Now().Add(1 * time.Hour),
+			Expires: time.Now().Add(7 * time.Hour),
 			Path:    "/",
 		})
 
