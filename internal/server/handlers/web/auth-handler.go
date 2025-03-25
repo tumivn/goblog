@@ -90,8 +90,6 @@ func (h *AuthHandler) PostSignUp(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "sign-up-success.html", newUser)
-
-	return c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 func (h *AuthHandler) GetSignIn(c echo.Context) error {

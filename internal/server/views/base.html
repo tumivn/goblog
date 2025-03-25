@@ -33,9 +33,6 @@
         <link href="/static/site.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="/css/styles.css"/>
         <title>lehoangdung.blog | {{template "title" .}}</title>
-        <script src="https://unpkg.com/htmx.org@1.9.9"
-                integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
-                crossorigin="anonymous"></script>
     </head>
     <body class="sample-transition bg-slate-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300" hx-boost="true" >
     <header class="" x-data="{ mobileMenuOpen: false}">
@@ -280,8 +277,7 @@
                         </div>
                         <div class="py-6">
                             <a href="#"
-                               class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log
-                                in</a>
+                               class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
                         </div>
                     </div>
                 </div>
@@ -307,10 +303,10 @@
             </div>
         </section>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine-ie11.min.js" integrity="sha512-Atu8sttM7mNNMon28+GHxLdz4Xo2APm1WVHwiLW9gW4bmHpHc/E2IbXrj98SmefTmbqbUTOztKl5PDPiu0LD/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
-        var themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
-        var themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
+        let themeToggleDarkIcon = document.getElementById("theme-toggle-dark-icon");
+        let themeToggleLightIcon = document.getElementById("theme-toggle-light-icon");
 
         // Change the icons inside the button based on previous settings
         if (
@@ -319,11 +315,13 @@
                 window.matchMedia("(prefers-color-scheme: dark)").matches)
         ) {
             themeToggleLightIcon.classList.remove("hidden");
+            themeToggleDarkIcon.classList.add("hidden");
         } else {
             themeToggleDarkIcon.classList.remove("hidden");
+            themeToggleLightIcon.classList.add("hidden");
         }
 
-        var themeToggleBtn = document.getElementById("theme-toggle");
+        let themeToggleBtn = document.getElementById("theme-toggle");
 
         themeToggleBtn.addEventListener("click", function () {
             // toggle icons inside button

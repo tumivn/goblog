@@ -1,6 +1,6 @@
 postgres:
 	@echo "Starting postgres..."
-	docker run --rm --name postgres -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
+	docker run --rm --name postgres -e POSTGRES_PASSWORD=docker -d -p 5432:5432 -v ${HOME}/docker/volumes/postgres:/var/lib/postgresql/data postgres
 	@echo "Postgres started."
 
 createdb:
