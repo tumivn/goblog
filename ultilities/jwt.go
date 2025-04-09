@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// GenerateJwt creates a JWT token with the given issuer and expiration time.
 func GenerateJwt(issuer string, jwtSecret string, expirationTime time.Time) (string, error) {
 	claims := jwt.MapClaims{
 		"issuer": issuer,
@@ -19,6 +20,7 @@ func GenerateJwt(issuer string, jwtSecret string, expirationTime time.Time) (str
 	return tokenString, nil
 }
 
+// GetIssuer ValidateJwt validates the JWT token and checks if it is expired.
 func GetIssuer(token string, secret string) (string, error) {
 	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil

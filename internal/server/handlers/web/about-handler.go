@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/tumivn/goblog/internal/domain/auth/services"
 	"github.com/tumivn/goblog/internal/server"
-	services2 "github.com/tumivn/goblog/internal/server/services"
+	serverServices "github.com/tumivn/goblog/internal/server/services"
 	"net/http"
 	"time"
 )
@@ -20,9 +20,17 @@ func NewAboutHandler(s *server.Server) *AboutHandler {
 }
 
 func (h *AboutHandler) About(c echo.Context) error {
-	user, _ := services2.GetCurrentUser(c, *h.server)
-	var users, _ = services.GetUsers()
-	var tick = time.Now().Format("20060102150405")
+	user, err := serverServices.GetCurrentUser(c, *h.server)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get current user"})
+	}
+
+	users, err := services.GetUsers()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to get users"})
+	}
+
+	tick := time.Now().Format("20060102150405")
 
 	return c.Render(http.StatusOK, "about.html", map[any]interface{}{
 		"name":        "About",

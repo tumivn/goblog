@@ -20,23 +20,27 @@ func NewAuthHandler(s *server.Server) *AuthHandler {
 	}
 }
 
+// Login CreateUser handles the creation of a new user
 func (h *AuthHandler) Login(c echo.Context) error {
 	u := dtos.LoginRequest{}
 
+	// Bind the request payload to the LoginRequest struct
+	// and validate the request payload
+	// If binding or validation fails, return a 400 Bad Request response
+	// Bind the request payload to the LoginRequest struct
 	err := c.Bind(&u)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, "invalid request payload: "+err.Error())
 	}
 
 	err = u.Validate()
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, "validation error: "+err.Error())
 	}
 
 	res, err := services.AuthenticateUser(&u, h.server.Config.JwtSecret)
-
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, err.Error())
+		return c.JSON(http.StatusUnauthorized, "authentication failed: "+err.Error())
 	}
 
 	c.SetCookie(&http.Cookie{
@@ -49,18 +53,19 @@ func (h *AuthHandler) Login(c echo.Context) error {
 }
 
 func (h *AuthHandler) GetMe(c echo.Context) error {
-
 	token, err := c.Cookie("token")
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, nil)
+		return c.JSON(http.StatusUnauthorized, "missing or invalid token: "+err.Error())
 	}
 
 	issuer, err := ultilities.GetIssuer(token.Value, h.server.Config.JwtSecret)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, "invalid token: "+err.Error())
+	}
 
 	user, err := services.GetUserByEmail(issuer)
-
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, nil)
+		return c.JSON(http.StatusUnauthorized, "user not found: "+err.Error())
 	}
 
 	return c.JSON(http.StatusOK, user)
@@ -69,8 +74,9 @@ func (h *AuthHandler) GetMe(c echo.Context) error {
 func (h *AuthHandler) Logout(c echo.Context) error {
 	_, err := c.Cookie("token")
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, nil)
+		return c.JSON(http.StatusUnauthorized, "missing or invalid token: "+err.Error())
 	}
+
 	c.SetCookie(&http.Cookie{
 		Name:    "token",
 		Value:   "",
@@ -78,10 +84,7 @@ func (h *AuthHandler) Logout(c echo.Context) error {
 		Path:    "/",
 	})
 
-	return c.JSON(
-		http.StatusOK,
-		&dtos.MessageResponse{
-			Message: "Logout success",
-		},
-	)
+	return c.JSON(http.StatusOK, &dtos.MessageResponse{
+		Message: "Logout success",
+	})
 }
